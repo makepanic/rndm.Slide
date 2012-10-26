@@ -46,12 +46,20 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				//class vorhanden
 				obj.className = obj.className.replace(className, '');
 			}
+		},
+		rfs: function(obj){
+			var rfs = obj.requestFullScreen || obj.webkitRequestFullScreen || obj.mozRequestFullScreen || function(){};
+			rfs.call(obj);
+		},
+		erfs: function(){
+			document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : false;
 		}
 	}
 
 	rndm.Slide = function(id, cfg){
 		this.slides = [];
 		this.overview = false;
+		this.fullscreen = false;
 		this.dim = {
 			w: 0,
 			h: 0
@@ -71,7 +79,6 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			this.obj = document.getElementById(id);
 
 			rndm.Util.addEvent(window, 'resize', function(){
-				console.log("resize");
 				that.resize(document.body.clientWidth, document.body.clientHeight);
 			});
 			rndm.Util.addEvent(window, 'mousewheel', function(e){
@@ -211,6 +218,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 						break;
 					case 40:
 						//down
+						that.toggleOverview();
 						break;
 					case 32:
 						//space
@@ -264,15 +272,11 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				class: 'rndm-navigation'
 			}, function(){
 				var inner = "";
-				var toDisplay = 3;
 				var from = -(that.now-1<0?0:(that.now+1>=that.slides.length)?2:1);
 				var to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1);
 				for (var i = from; i <= to; i++) {
 					inner += '<li><a ' + (that.now == that.now+i ? 'class="active"' : '')+ '  href="#' + (that.now+i) + '">' + that.slides[that.now+i].title + '</a></li>'
 				};
-				/*for (var i = 0; i < that.slides.length; i++) {
-					inner += '<li><a ' + (that.now == i ? 'class="active"' : '')+ '  href="#' + i + '">' + that.slides[i].title + '</a></li>'
-				};*/
 				this.obj.innerHTML = inner;
 			}));
 
@@ -281,7 +285,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				class: 'progress',
 				text: ''
 			}, function(){
-				this.obj.innerHTML = "<i>"+(that.now + 1) + "/" + that.slides.length + "</i>";
+				//this.obj.innerHTML = "<i>"+(that.now + 1) + "/" + that.slides.length + "</i>";
 				this.obj.style.width = that.now*(100/(that.slides.length-1))+"%";
 			}));
 
@@ -296,28 +300,29 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			div.setAttribute('id', 'rndm-controls');
 			var controls = [
 				new rndm.Control({
-					class: 'prev',
-					text: '<'
-				}, function(){
-					that.prev();
-				}),
-				new rndm.Control({
-					class: 'next',
-					text: '>'
-				}, function(){
-					that.next();
-				}),
-				new rndm.Control({
 					class: 'play',
-					text: 'play/pause'
+					text: ''
 				}, function(){
 					that.play();
+					if(!that.interval){
+						rndm.Util.removeClass(this, 'pause');
+						rndm.Util.addClass(this, 'play');
+					}else{
+						rndm.Util.removeClass(this, 'play');
+						rndm.Util.addClass(this, 'pause');						
+					}
 				}),
 				new rndm.Control({
 					class: 'zoom',
 					text: ''
 				}, function(){
 					that.toggleOverview();
+				}),
+				new rndm.Control({
+					class: 'fullscreen',
+					text: ''
+				}, function(){
+					that.toggleFullscreen();
 				})
 			];
 
@@ -353,6 +358,16 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		},
 		toggleOverview: function(){
 			this.overview = !this.overview;
+			//this.resize(this.dim.w, this.dim.h);
+			this._render();
+		},
+		toggleFullscreen: function(){
+			this.fullscreen = !this.fullscreen;
+			//this.resize(this.dim.w, this.dim.h);
+			if(this.fullscreen)
+				rndm.Util.rfs(this.obj.parentNode);//.requestFullscreen();
+			else
+				rndm.Util.erfs();//.requestFullscreen();
 			this._render();
 		},
 		resize: function(w, h){
@@ -368,18 +383,14 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		},
 		play: function(){
 			if(this.interval){
-				//already playing
-				console.info("clear interval");
 				window.clearInterval(this.interval);
 				this.interval = 0;
 			}else{
 				var that = this;
 				this.interval = window.setInterval(function(){
 					if(!that.slides[that.now].nextStep()){
-						//kein step mehr übrig
 						that.next();
 					}
-					console.log("tic");
 				}, this.cfg.timeout);
 			}
 		},

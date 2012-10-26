@@ -6,18 +6,45 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="HandheldFriendly" content="true" />
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" title="" media="all" href="./style.css" />
+        <link rel="stylesheet" type="text/css" title="" media="all" href="./rndm.css" />
+        <style>
+        .center{
+            text-align: center;
+        }
+        .table{
+            display:table;
+            height:100%;
+        }
+        .table-cell{
+            display:table-cell;
+            vertical-align: middle;
+        }
+        #presentation i,#presentation p{
+            display: block;
+            margin-bottom: 1rem;
+        }
+        h1 img{
+            width:159px;
+            height:30px;
+        }
+        b{
+            background:#f5f5f5;
+            border:1px solid #ddd;
+            padding:5px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        </style>
     </head>
     <body>
         <div id="presentation">
             <div data-src="1 Title">
-                <div class="wrap step">
-                    <ul>
-                        <li class="step">Schritt 1</li>
-                        <li class="step">Schritt 2</li>
-                        <li>Schritt 2.1</li>
-                        <li class="step">Schritt 3</li>
-                    </ul>
+                <div class="wrap table center">
+                    <div class="table-cell">
+                        <h1><img src="logo.png" alt="rndm.Slide"/></h1>
+                        <i>a lightweight html slidedeck application</i>
+                        <p>use <b>mousewheel</b> or <b>←</b> <b>→</b> arrows to move</p>
+                    </div>
                 </div>
             </div>
             <div data-src="1.1 Overview">
