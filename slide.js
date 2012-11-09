@@ -137,7 +137,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		this.step = 0;
 		this.steps = steps;
 		if(this.steps){
-			for (var i = 0; i < this.steps.length; i++) {
+			for (var i = 0, max = this.steps.length; i < max; i++) {
 				rndm.Util.addClass(this.steps[i], "rndm-hidden");
 			};
 		}
@@ -178,7 +178,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			this.children = children;
 		},
 		render: function(){
-			for (var i = 0; i < this.children.length; i++) {
+			for (var i = 0, max = this.children.length; i < max; i++) {
 				this.children[i].onRender();
 				this.obj.appendChild(this.children[i].obj);
 			};
@@ -192,7 +192,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 	rndm.Slide.prototype = {
 		_genPages: function(){
 			var classSlides = this.obj.children;
-			for (var i = 0; i < classSlides.length; i++) {
+			for (var i = 0, max = classSlides.length; i < max; i++) {
 				this.slides.push(new rndm.Page(classSlides[i], classSlides[i].getElementsByClassName('step')));
 			};
 		},
@@ -234,19 +234,18 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			});
 		},
 		_buildWrapper: function(){
-			var parent = this.obj.parentNode;
-			var wrapper = document.createElement('div');
+			var parent = this.obj.parentNode,
+				wrapper = document.createElement('div');
 			wrapper.setAttribute('id', 'rndm-wrapper');
 
 			parent.replaceChild(wrapper, this.obj);
 			wrapper.appendChild(this.obj);
 		},
 		_buildHud: function(){
-			var that = this;
-			var div = document.createElement('div');
+			var that = this,
+				div = document.createElement('div'),
+				children = [];
 			div.setAttribute('id', 'rndm-hud');
-
-			var children = [];
 
 			/*
 			children.push(new rndm.Display('dim', {
@@ -271,9 +270,9 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				text: 'Folie',
 				class: 'rndm-navigation'
 			}, function(){
-				var inner = "";
-				var from = -(that.now-1<0?0:(that.now+1>=that.slides.length)?2:1);
-				var to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1);
+				var inner = "",
+					from = -(that.now-1<0?0:(that.now+1>=that.slides.length)?2:1),
+					to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1);
 				for (var i = from; i <= to; i++) {
 					inner += '<li><a ' + (that.now == that.now+i ? 'class="active"' : '')+ '  href="#' + (that.now+i) + '">' + that.slides[that.now+i].title + '</a></li>'
 				};
@@ -294,11 +293,11 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			this.hud.addAllChildren(children);
 		},
 		_buildControls: function(){
-			var that = this;
-
-			var div = document.createElement('div');
+			var that = this,
+				div = document.createElement('div'),
+				controls = [];
 			div.setAttribute('id', 'rndm-controls');
-			var controls = [
+			controls = [
 				new rndm.Control({
 					class: 'play',
 					text: ''
@@ -336,7 +335,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 					})
 				]
 			}
-			for (var i = 0; i < controls.length; i++) {
+			for (var i = 0, max = controls.length; i < max; i++) {
 				div.appendChild(controls[i].getDOMElement());
 			};
 
@@ -352,7 +351,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			}
 		},
 		resetClasses: function(){
-			for (var i = 0; i < this.slides.length; i++) {
+			for (var i = 0, max = this.slides.length; i < max; i++) {
 				this.slides[i].obj.className = '';
 			};
 		},
@@ -373,7 +372,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		resize: function(w, h){
 			this.dim.w = w;
 			this.dim.h = h;
-			for (var i = 0; i < this.slides.length; i++) {
+			for (var i = 0, max = this.slides.length; i < max; i++) {
 				this.slides[i].obj.style.width = w;
 				this.slides[i].obj.style.height = h;
 			};
