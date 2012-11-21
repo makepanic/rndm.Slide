@@ -193,7 +193,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		_genPages: function(){
 			var classSlides = this.obj.children;
 			for (var i = 0, max = classSlides.length; i < max; i++) {
-				this.slides.push(new rndm.Page(classSlides[i], classSlides[i].getElementsByClassName('step')));
+				this.slides.push(new rndm.Page(classSlides[i], classSlides[i].getElementsByClassName('rndm-step')));
 			};
 		},
 		_hashChange: function(hash){
@@ -343,11 +343,16 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		},
 		_render: function(){
 			this.hud.render();
-			this.obj.style.width = (this.slides.length * this.dim.w) + "px";
-			this.obj.style.marginLeft = -(this.now*this.dim.w);
+			this.obj.style.width = (this.dim.w) + "px";
 			this.resetClasses();
 			if(!this.overview){
+				if(this.slides[this.now-1]){
+					this.slides[this.now - 1].obj.className = 'rndm-slide-prev';
+				}
 				this.slides[this.now].obj.className = 'rndm-slide-now';
+				if(this.slides[this.now+1]){
+					this.slides[this.now + 1].obj.className = 'rndm-slide-next';
+				}
 			}
 		},
 		resetClasses: function(){
