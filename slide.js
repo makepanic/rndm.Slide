@@ -271,12 +271,22 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				class: 'rndm-navigation'
 			}, function(){
 				var inner = [],
+					li = [],
 					from = -(that.now-1<0?0:(that.now+1>=that.slides.length)?2:1),
 					to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1),
 					nowI = 0;
 				for (var i = from; i <= to; i++) {
 					nowI = that.now +i;
-					inner.push('<li><a ' + (that.now == nowI ? 'class="active"' : '')+ '  href="#' + nowI + '">' + that.slides[nowI].title + '</a></li>')
+					li = [
+						'<li><a ',
+						(that.now == nowI ? 'class="active"' : ''),
+						'  href="#',
+						nowI,
+						'">',
+						that.slides[nowI].title,
+						'</a></li>'
+					];
+					inner.push(li.join(""))
 				};
 				this.obj.innerHTML = inner.join("");
 			}));
