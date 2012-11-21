@@ -72,20 +72,18 @@ a{
 }
 .rndm-slide-prev{
 	opacity:0;
-	z-index:1;
 	-o-transform:scale(1.5);
 	-webkit-transform:scale(1.5);
 }
 .rndm-slide-now{
-	z-index:1;
 	opacity:1;
 	-o-transform:scale(1);
 	-webkit-transform:scale(1);
 }
 .rndm-slide-next{
 	opacity:0;
-	-o-transform:scale(.8);
-	-webkit-transform:scale(.8);
+	-o-transform:scale(.9);
+	-webkit-transform:scale(.9);
 }
 .rndm-navigation a{
 	padding:8px 10px;

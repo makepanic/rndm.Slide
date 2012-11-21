@@ -270,13 +270,15 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				text: 'Folie',
 				class: 'rndm-navigation'
 			}, function(){
-				var inner = "",
+				var inner = [],
 					from = -(that.now-1<0?0:(that.now+1>=that.slides.length)?2:1),
-					to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1);
+					to = (that.now-1<0?2:(that.now+1>=that.slides.length)?0:1),
+					nowI = 0;
 				for (var i = from; i <= to; i++) {
-					inner += '<li><a ' + (that.now == that.now+i ? 'class="active"' : '')+ '  href="#' + (that.now+i) + '">' + that.slides[that.now+i].title + '</a></li>'
+					nowI = that.now +i;
+					inner.push('<li><a ' + (that.now == nowI ? 'class="active"' : '')+ '  href="#' + nowI + '">' + that.slides[nowI].title + '</a></li>')
 				};
-				this.obj.innerHTML = inner;
+				this.obj.innerHTML = inner.join("");
 			}));
 
 			children.push(new rndm.Display('progress', {
