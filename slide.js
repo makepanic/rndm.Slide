@@ -25,8 +25,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				window.onhashchange = function () {
 					callback(window.location.hash);
 				}
-			}
-			else {
+			} else {
 			 // event not supported:
 				var storedHash = window.location.hash;
 				window.setInterval(function () {
@@ -82,21 +81,25 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				that.resize(document.body.clientWidth, document.body.clientHeight);
 			});
 			rndm.Util.addEvent(window, 'mousewheel', function(e){
-				if(e.detail){
-					e.detail > 0 ? that.next() : that.prev();
-				}else if(e.wheelDelta){
-					e.wheelDelta > 0 ? that.prev() : that.next();
-				}
+                if(!that.overview){
+                    if(e.detail){
+                        e.detail > 0 ? that.next() : that.prev();
+                    }else if(e.wheelDelta){
+                        e.wheelDelta > 0 ? that.prev() : that.next();
+                    }
+                }
 			})
 
 			//TODO: multiple wheel bindings
 
 			rndm.Util.addEvent(window, 'DOMMouseScroll', function(e){
-				if(e.detail){
-					e.detail > 0 ? that.next() : that.prev();
-				}else if(e.wheelDelta){
-					e.wheelDelta > 0 ? that.prev() : that.next();
-				}
+                if(!that.overview){
+                    if(e.detail){
+                        e.detail > 0 ? that.next() : that.prev();
+                    }else if(e.wheelDelta){
+                        e.wheelDelta > 0 ? that.prev() : that.next();
+                    }
+                }
 			})
 
 
@@ -123,6 +126,7 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			}
 			this.obj.className += this.obj.className ? " rndm-slide" : "rndm-slide";
 
+            this._genTranslateStyle();
 			this._bindKeys();
 			this._genPages();
 			this._buildWrapper();
@@ -190,6 +194,34 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 		}
 	};
 	rndm.Slide.prototype = {
+        _genTranslateStyle: function(){
+            var id = 'translate-style';
+            var scaleInactive = .8;
+            var styles = {
+                prev: '.rndm-slide-prev{ -webkit-transform:scale(' + scaleInactive + ') translate(-' + this.dim.w + 'px); }',
+                next: '.rndm-slide-now{ -webkit-transform:scale(1) translate(0); }',
+                now: '.rndm-slide-next{ -webkit-transform:scale(' + scaleInactive + ') translate(' + this.dim.w + 'px); }'
+            }
+
+            var element = document.getElementById(id);
+            if(element){
+                element.parentNode.removeChild(element);
+            }
+
+            var css = styles.prev + styles.next + styles.now,
+                head = document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.id = id;
+            style.type = 'text/css';
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+
+            head.appendChild(style);
+        },
 		_genPages: function(){
 			var classSlides = this.obj.children;
 			for (var i = 0, max = classSlides.length; i < max; i++) {
@@ -358,6 +390,8 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			this.obj.style.width = (this.dim.w) + "px";
 			this.resetClasses();
 			if(!this.overview){
+                rndm.Util.removeClass(this.obj, "rndm-slide-overview");
+
 				if(this.slides[this.now-1]){
 					this.slides[this.now - 1].obj.className = 'rndm-slide-prev';
 				}
@@ -365,7 +399,10 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 				if(this.slides[this.now+1]){
 					this.slides[this.now + 1].obj.className = 'rndm-slide-next';
 				}
-			}
+			}else{
+
+                rndm.Util.addClass(this.obj, "rndm-slide-overview");
+            }
 		},
 		resetClasses: function(){
 			for (var i = 0, max = this.slides.length; i < max; i++) {
@@ -395,6 +432,8 @@ rndm.isTouchSupported = "ontouchstart" in document.documentElement;
 			};
 			this.obj.parentNode.style.width = w;
 			this.obj.parentNode.style.height = h;
+
+            this._genTranslateStyle();
 			this._render();
 		},
 		play: function(){
